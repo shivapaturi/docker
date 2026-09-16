@@ -42,11 +42,11 @@ resource "aws_security_group" "allow_all_docker" {
         Name = "allow-all-docker"
     }
 }
-resource "aws_route53_record" "docker" {
-  zone_id = var.zone_id
-  name    = "${var.environment}.${var.zone_name}" # dev.mydaws.site
-  type    = "A"
-  ttl     = 300
-  records = [aws_instance.docker.public_ip]
+# resource "aws_route53_record" "docker" {
+#   zone_id = var.zone_id
+#   name    = "${var.environment}.${var.zone_name}" # dev.mydaws.site
+#   type    = "A"
+#   ttl     = 300
+#   records = [aws_instance.docker.public_ip]
 
-}
+# }
