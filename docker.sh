@@ -29,68 +29,18 @@ sudo lvextend -L +10G /dev/RootVG/varVol
 sudo xfs_growfs /
 sudo xfs_growfs /var
 
-# eksctl
-
 ARCH=amd64
 PLATFORM=$(uname -s)_$ARCH
-curl -sLO \
-  "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz"
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
 
-tar -xzf "eksctl_${PLATFORM}.tar.gz" -C /tmp
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.0/2025-05-01/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mv kubectl /usr/local/bin/kubectl
 
-sudo install -m 0755 /tmp/eksctl /usr/local/bin/eksctl
-
-rm -f "eksctl_${PLATFORM}.tar.gz"
-rm -f /tmp/eksctl
-
-
-# kubectl
-
-curl -LO \
-  "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-
-chmod +x kubectl
-
-sudo install -m 0755 kubectl /usr/local/bin/kubectl
-
-rm -f kubectl
-
-# Git
-
-sudo dnf install -y git
-
-
-# kubectx / kubens
-
-sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
-
-sudo ln -sf /opt/kubectx/kubectx /usr/local/bin/kubectx
-sudo ln -sf /opt/kubectx/kubens /usr/local/bin/kubens
-
-
-# Verification
-
-echo "=============================="
-echo "Docker:"
-docker --version
-
-echo "Docker Compose:"
-docker compose version
-
-echo "eksctl:"
 eksctl version
+kubectl version
 
-echo "kubectl:"
-kubectl version --client
-
-echo "Git:"
-git --version
-
-echo "kubectx:"
-kubectx --help >/dev/null 2>&1 && echo "kubectx installed"
-
-echo "kubens:"
-kubens --help >/dev/null 2>&1 && echo "kubens installed"
-
-echo "=============================="
-echo "Installation completed!"
+git clone https://github.com/ahmetb/kubectx /opt/kubectx
+ln -s /opt/kubectx/kubens /usr/local/bin/kubens
